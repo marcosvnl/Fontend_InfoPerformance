@@ -1,0 +1,42 @@
+services:
+  # Serviço para desenvolvimento com Hot Reload
+  app-dev:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # Importante para Windows
+    stdin_open: true
+    tty: true
+    container_name: react-vite-app-dev
+
+  # Serviço para produção
+  app-prod:
+    build:
+      context: .
+      target: production
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    container_name: react-vite-app-prod
+
+  # Serviço opcional para API fake (json-server)
+  api:
+    image: node:20-alpine
+    ports:
+      - "3001:3001"
+    working_dir: /app
+    volumes:
+      - ./db.json:/app/db.json
+      - ./api-server.js:/app/api-server.js
+    command: >
+      sh -c "npm install -g json-server && 
+             json-server --watch db.json --port 3001 --host 0.0.0.0"
+    container_name: json-server-api
