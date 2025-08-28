@@ -1,7 +1,5 @@
 import type { User, LoginCredentials } from '../types/User';
 
-const API_BASE_URL = 'http://localhost:3001';
-
 // Simulação de banco de dados fake
 let users: User[] = [
   {
